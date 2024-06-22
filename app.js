@@ -63,3 +63,59 @@ const galleryItems = [
       description: 'Lighthouse Coast Sea',
     },
   ];
+
+const jsGallery = document.querySelector('.js-gallery')
+const galleryItem = document.querySelector('.gallery__item')
+const lightBoxImage = document.querySelector('.lightbox__image')
+const lightBox = document.querySelector('.lightbox')
+const closeButton = document.querySelector('[data-action="close-lightbox"]')
+
+function createGalleryMarkup(items) {
+  return items.map(( {preview, original, description} ) => {
+    console.log(preview, original, description);
+
+
+  return `
+  <li class="gallery__item">
+      <a
+        class="gallery__link"
+        href="${original}"
+      >
+        <img
+          class="gallery__image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>
+  `;
+  }).join('')
+}
+
+const galleryData = createGalleryMarkup(galleryItems)
+
+jsGallery.insertAdjacentHTML('afterbegin', galleryData)
+
+function openModalWindow(imgUrl) {
+  lightBox.classList.add('is-open')
+  lightBoxImage.src = imgUrl
+}
+openModalWindow()
+
+function closeModalWindow() {
+  lightBox.classList.remove('is-open')
+  lightBoxImage.src = ''
+}
+closeModalWindow()
+
+function originalPath(event) {
+  event.preventDefault()
+  if(event.target.classList.contains('gallery__image')) {
+    const bigImageUrl = event.target.dataset.source;
+    openModalWindow(bigImageUrl)
+  }
+}
+
+jsGallery.addEventListener('click', originalPath)
+closeButton.addEventListener('click', closeModalWindow)
